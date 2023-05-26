@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f8eae1dace4434aa94eb98cf6fef8d, type: 3}
+  m_Name: Prefabs Data
+  m_EditorClassIdentifier: 
+  EnvironmentPartPrefabs:
+  - {fileID: 6579956708608045395, guid: 621d14155ae31e2499a9c391aaedde80, type: 3}
+  - {fileID: 6579956708608045395, guid: b4995633cd65104478323e7938f3d762, type: 3}
+  - {fileID: 6579956708608045395, guid: 442f1172e6ef1694fa2dd4a9bde2b3ea, type: 3}
+  StartEnvironmentPartPrefab: {fileID: 6579956708608045395, guid: 13dd6f1d527ea43408b454545fe78924, type: 3}
+  RocketPrefab: {fileID: 7158963749643439247, guid: 1d5d1af20f1c09342bc74fa63f7bdb19, type: 3}
+  PlayerVirtualCameraPrefab: {fileID: 5663524140505685295, guid: 7f99fdbac3b049243a440ea4338c6fae, type: 3}
+  RootCanvasPrefab: {fileID: 8927380304441350616, guid: 17f494cd2bfab493fa28ae48dd62b1a8, type: 3}
+  GameOverWindowPrefab: {fileID: 6729102326845350724, guid: f376237af96529a45a6882334433ecf5, type: 3}
