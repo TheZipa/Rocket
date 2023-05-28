@@ -13,29 +13,35 @@ namespace Code.Core.Rocket
         [SerializeField] private RocketExplosion _explosionEffect;
         [SerializeField] private GameObject _view;
         
-        private const float MaxYVelocity = 22.5f;
+        private const float MaxYVelocity = 10f;
         private const float StartVelocity = 6f;
-        private const float ForceCoefficient = 16f;
+        private const float ForceCoefficient = 2f;
+        private bool _isFlyEnabled;
 
-        public void EnableTrail() => _trail.emitting = true;
+        public void EnableFly() => _isFlyEnabled = _trail.emitting = true;
 
-        public void DisableTrail() => _trail.emitting = false;
-
-        public void AddVerticalForce()
-        {
-            if (_rigidbody.velocity.y >= MaxYVelocity) return;
-            _rigidbody.AddForce(transform.up / ForceCoefficient, ForceMode.Impulse);
-        }
+        public void DisableFly() => _isFlyEnabled = _trail.emitting = false;
 
         private void Start() => _rigidbody.velocity = new Vector3(0, StartVelocity, 0);
 
         private void Update() => OnUpdate?.Invoke();
 
-        private void OnCollisionEnter(Collision collision)
+        private void FixedUpdate()
+        {
+            if (!_isFlyEnabled || _rigidbody.velocity.y >= MaxYVelocity) return;
+            _rigidbody.AddForce(transform.up / ForceCoefficient, ForceMode.Impulse);
+        }
+
+        private void Explode()
         {
             _view.SetActive(false);
             _explosionEffect.Show();
             _rigidbody.isKinematic = true;
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            Explode();
             OnExplode?.Invoke();
         }
     }

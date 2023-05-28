@@ -38,16 +38,16 @@ namespace Code.Infrastructure.StateMachine.States
 
         private void PrepareInput()
         {
-            _inputService.OnDragStart += _rocket.EnableTrail;
-            _inputService.OnDragEnd += _rocket.DisableTrail;
+            _inputService.OnDragStart += _rocket.EnableFly;
+            _inputService.OnDragEnd += _rocket.DisableFly;
             _inputService.OnDrag += AddForceForRocket;
             _inputService.Enable();
         }
 
         public void Exit()
         {
-            _inputService.OnDragStart -= _rocket.EnableTrail;
-            _inputService.OnDragEnd -= _rocket.DisableTrail;
+            _inputService.OnDragStart -= _rocket.EnableFly;
+            _inputService.OnDragEnd -= _rocket.DisableFly;
             _inputService.OnDrag -= AddForceForRocket;
             _inputService.Disable();
             _permanentLevel.Dispose();
@@ -89,11 +89,8 @@ namespace Code.Infrastructure.StateMachine.States
             playerVirtualCamera.Follow = _rocket.transform;
         }
 
-        private void AddForceForRocket(float screenX)
-        {
-            _rocket.transform.Rotate(Vector3.forward, screenX / -1000);
-            _rocket.AddVerticalForce();
-        }
+        private void AddForceForRocket(float screenX) =>
+            _rocket.transform.Rotate(Vector3.forward, screenX / 3 * -Time.deltaTime);
 
         private void RetryGame()
         {
