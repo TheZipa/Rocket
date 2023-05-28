@@ -25,6 +25,8 @@
 
 # Visual Studio cache directory
 .vs/
+.idea/
+.vscode/
 
 # Gradle cache directory
 .gradle/
@@ -56,7 +58,6 @@ ExportedObj/
 sysinfo.txt
 
 # Builds
-*.apk
 *.aab
 *.unitypackage
 *.app
