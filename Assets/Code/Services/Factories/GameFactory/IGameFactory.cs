@@ -4,7 +4,7 @@ using Code.Core.Environment;
 using Code.Core.Rocket;
 using Code.Infrastructure.ServiceContainer;
 
-namespace Code.Services.Factories.UIFactory
+namespace Code.Services.Factories.GameFactory
 {
     public interface IGameFactory : IService
     {

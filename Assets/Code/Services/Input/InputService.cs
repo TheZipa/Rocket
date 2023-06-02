@@ -33,6 +33,7 @@ namespace Code.Services.Input
 
         public void Disable()
         {
+            _isDrag = false;
             _inputActions.Main.Press.performed -= StartDrag;
             _inputActions.Main.Press.canceled -= StopDrag;
             _inputActions.Disable();

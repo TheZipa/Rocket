@@ -6,7 +6,7 @@ using Code.Core.Rocket;
 using Code.Services.StaticData;
 using UnityEngine;
 
-namespace Code.Services.Factories.UIFactory
+namespace Code.Services.Factories.GameFactory
 {
     public class GameFactory : IGameFactory
     {
@@ -25,7 +25,12 @@ namespace Code.Services.Factories.UIFactory
         public EnvironmentPart CreateStartEnvironmentPart() =>
             Object.Instantiate(_staticData.Prefabs.StartEnvironmentPartPrefab);
 
-        public Rocket CreateRocket() => Object.Instantiate(_staticData.Prefabs.RocketPrefab);
+        public Rocket CreateRocket()
+        {
+            Rocket rocket = Object.Instantiate(_staticData.Prefabs.RocketPrefab);
+            rocket.Construct(_staticData.MainConfiguration.MaxRocketSpeed);
+            return rocket;
+        }
 
         public CinemachineVirtualCamera CreatePlayerVirtualCamera() =>
             Object.Instantiate(_staticData.Prefabs.PlayerVirtualCameraPrefab);

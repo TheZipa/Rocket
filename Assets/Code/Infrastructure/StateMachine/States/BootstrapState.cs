@@ -1,5 +1,6 @@
 using Code.Infrastructure.StateMachine.GameStateMachine;
 using Code.Services.CoroutineRunner;
+using Code.Services.Factories.GameFactory;
 using Code.Services.Factories.UIFactory;
 using Code.Services.Input;
 using Code.Services.SceneLoader;

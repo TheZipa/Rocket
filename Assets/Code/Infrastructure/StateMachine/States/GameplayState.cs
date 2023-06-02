@@ -3,9 +3,11 @@ using Code.Core.Environment;
 using Code.Core.Rocket;
 using Code.Core.UI;
 using Code.Infrastructure.StateMachine.GameStateMachine;
+using Code.Services.Factories.GameFactory;
 using Code.Services.Factories.UIFactory;
 using Code.Services.Input;
 using Code.Services.SceneLoader;
+using Code.Services.StaticData;
 using UnityEngine;
 
 namespace Code.Infrastructure.StateMachine.States
@@ -18,13 +20,14 @@ namespace Code.Infrastructure.StateMachine.States
         private readonly IUIFactory _uiFactory;
         private readonly IInputService _inputService;
         private readonly PermanentLevelSystem _permanentLevel;
+        private readonly RocketInputHandler _rocketInputHandler;
 
         private const string GameScene = "Game";
-        private Rocket _rocket;
         private GameOverWindow _gameOverWindow;
+        private Rocket _rocket;
 
         public GameplayState(IGameStateMachine stateMachine, ISceneLoader sceneLoader, IGameFactory gameFactory,
-            IUIFactory uiFactory, IInputService inputService)
+            IUIFactory uiFactory, IInputService inputService, IStaticData staticData)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
@@ -32,26 +35,16 @@ namespace Code.Infrastructure.StateMachine.States
             _uiFactory = uiFactory;
             _inputService = inputService;
             _permanentLevel = new PermanentLevelSystem(gameFactory);
+            _rocketInputHandler = new RocketInputHandler(inputService, staticData);
         }
 
         public void Enter() => _sceneLoader.LoadScene(GameScene, PrepareGame);
 
-        private void PrepareInput()
-        {
-            _inputService.OnDragStart += _rocket.EnableFly;
-            _inputService.OnDragEnd += _rocket.DisableFly;
-            _inputService.OnDrag += AddForceForRocket;
-            _inputService.Enable();
-        }
-
         public void Exit()
         {
-            _inputService.OnDragStart -= _rocket.EnableFly;
-            _inputService.OnDragEnd -= _rocket.DisableFly;
-            _inputService.OnDrag -= AddForceForRocket;
-            _inputService.Disable();
+            _rocketInputHandler.Dispose();
             _permanentLevel.Dispose();
-            _rocket.OnExplode -= _gameOverWindow.Show;
+            _rocket.OnExplode -= DefineGameOver;
             _gameOverWindow.OnRetryClick -= RetryGame;
         }
 
@@ -60,8 +53,8 @@ namespace Code.Infrastructure.StateMachine.States
             CreateUI();
             CreateRocket();
             PreparePermanentLevel();
-            PrepareInput();
             CreateVirtualCamera();
+            _rocketInputHandler.ConnectRocketInput(_rocket);
         }
 
         private void PreparePermanentLevel()
@@ -73,7 +66,7 @@ namespace Code.Infrastructure.StateMachine.States
         private void CreateRocket()
         {
             _rocket = _gameFactory.CreateRocket();
-            _rocket.OnExplode += _gameOverWindow.Show;
+            _rocket.OnExplode += DefineGameOver;
         }
 
         private void CreateUI()
@@ -89,8 +82,11 @@ namespace Code.Infrastructure.StateMachine.States
             playerVirtualCamera.Follow = _rocket.transform;
         }
 
-        private void AddForceForRocket(float screenX) =>
-            _rocket.transform.Rotate(Vector3.forward, screenX / 3 * -Time.deltaTime);
+        private void DefineGameOver()
+        {
+            _gameOverWindow.Show();
+            _inputService.Disable();
+        }
 
         private void RetryGame()
         {

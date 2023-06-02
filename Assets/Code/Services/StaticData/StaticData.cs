@@ -6,6 +6,7 @@ namespace Code.Services.StaticData
     public class StaticData : IStaticData
     {
         public PrefabsData Prefabs { get; private set; }
+        public MainConfiguration MainConfiguration { get; private set; }
         
         private readonly IStaticDataProvider _staticDataProvider;
 
@@ -14,6 +15,7 @@ namespace Code.Services.StaticData
         public void LoadStaticData()
         {
             Prefabs = _staticDataProvider.LoadPrefabsData();
+            MainConfiguration = _staticDataProvider.LoadMainConfiguration();
         }
     }
 }

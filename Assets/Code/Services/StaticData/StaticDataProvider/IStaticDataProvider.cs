@@ -6,5 +6,6 @@ namespace Code.Services.StaticData.StaticDataProvider
     public interface IStaticDataProvider : IService
     {
         PrefabsData LoadPrefabsData();
+        MainConfiguration LoadMainConfiguration();
     }
 }

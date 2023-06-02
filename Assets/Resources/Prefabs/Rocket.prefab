@@ -93,6 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3505719438165276542}
   - component: {fileID: 7158963749643439247}
+  - component: {fileID: 8055623189772138202}
   - component: {fileID: 64583677277045487}
   - component: {fileID: 230685033706403939}
   m_Layer: 0
@@ -135,7 +136,21 @@ MonoBehaviour:
   _trail: {fileID: 4343726405709878436}
   _rigidbody: {fileID: 64583677277045487}
   _explosionEffect: {fileID: 123128940060234466}
+  _movement: {fileID: 8055623189772138202}
   _view: {fileID: 654614277927947054}
+--- !u!114 &8055623189772138202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2206315378795989960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c754c78db442d999d082aeea9c0cb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rigidbody: {fileID: 64583677277045487}
 --- !u!54 &64583677277045487
 Rigidbody:
   m_ObjectHideFlags: 0

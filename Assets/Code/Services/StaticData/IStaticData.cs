@@ -6,6 +6,7 @@ namespace Code.Services.StaticData
     public interface IStaticData : IService
     {
         PrefabsData Prefabs { get; }
+        MainConfiguration MainConfiguration { get; }
         void LoadStaticData();
     }
 }
