@@ -7,6 +7,7 @@ namespace Code.Data.StaticData
     {
         public float MaxRocketSpeed;
         public float GameOverCameraOffset;
+        public float EnvironmentPartReplaceDistance;
         [Range(1, 10)] public float ClampAngle;
     }
 }

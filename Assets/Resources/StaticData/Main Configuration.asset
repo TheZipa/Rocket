@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: Main Configuration
   m_EditorClassIdentifier: 
   MaxRocketSpeed: 11
+  GameOverCameraOffset: 20
+  EnvironmentPartReplaceDistance: 25
   ClampAngle: 2

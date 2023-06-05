@@ -1,25 +1,22 @@
 using System;
+using Code.Services.EntityContainer;
 using Code.Services.Input;
 using Code.Services.StaticData;
 using UnityEngine;
 
 namespace Code.Core.Rocket
 {
-    public class RocketInputHandler : IDisposable
+    public class RocketInputHandler : IFactoryEntity, IDisposable
     {
         private readonly IInputService _inputService;
         private readonly float _clampAngle;
-        private Rocket _rocket;
+        private readonly Rocket _rocket;
 
-        public RocketInputHandler(IInputService inputService, IStaticData staticData)
+        public RocketInputHandler(IInputService inputService, Rocket rocket, float clampAngle)
         {
             _inputService = inputService;
-            _clampAngle = staticData.MainConfiguration.ClampAngle;
-        }
-
-        public void ConnectRocketInput(Rocket rocket)
-        {
             _rocket = rocket;
+            _clampAngle = clampAngle;
             PrepareInput();
         }
 
@@ -36,7 +33,6 @@ namespace Code.Core.Rocket
             _inputService.OnDragStart += _rocket.EnableFly;
             _inputService.OnDragEnd += _rocket.DisableFly;
             _inputService.OnDrag += MoveRocket;
-            _inputService.Enable();
         }
         
         private void MoveRocket(float screenX)

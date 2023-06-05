@@ -1,13 +1,12 @@
+using System.Collections;
 using Code.Core.Camera;
 using Code.Core.Environment;
 using Code.Core.Rocket;
 using Code.Core.UI;
 using Code.Infrastructure.StateMachine.GameStateMachine;
-using Code.Services.Factories.GameFactory;
-using Code.Services.Factories.UIFactory;
+using Code.Services.CoroutineRunner;
+using Code.Services.EntityContainer;
 using Code.Services.Input;
-using Code.Services.SceneLoader;
-using Code.Services.StaticData;
 using UnityEngine;
 
 namespace Code.Infrastructure.StateMachine.States
@@ -15,31 +14,33 @@ namespace Code.Infrastructure.StateMachine.States
     public class GameplayState : IState
     {
         private readonly IGameStateMachine _stateMachine;
-        private readonly ISceneLoader _sceneLoader;
-        private readonly IGameFactory _gameFactory;
-        private readonly IUIFactory _uiFactory;
+        private readonly IEntityContainer _entityContainer;
         private readonly IInputService _inputService;
-        private readonly PermanentLevelSystem _permanentLevel;
-        private readonly RocketInputHandler _rocketInputHandler;
-
-        private const string GameScene = "Game";
+        private readonly ICoroutineRunner _coroutineRunner;
+        private PermanentLevelSystem _permanentLevel;
+        private RocketInputHandler _rocketInputHandler;
+        
         private GameOverWindow _gameOverWindow;
         private LevelCamera _levelCamera;
         private Rocket _rocket;
 
-        public GameplayState(IGameStateMachine stateMachine, ISceneLoader sceneLoader, IGameFactory gameFactory,
-            IUIFactory uiFactory, IInputService inputService, IStaticData staticData)
+        public GameplayState(IGameStateMachine stateMachine, IEntityContainer entityContainer, 
+            IInputService inputService, ICoroutineRunner coroutineRunner)
         {
             _stateMachine = stateMachine;
-            _sceneLoader = sceneLoader;
-            _gameFactory = gameFactory;
-            _uiFactory = uiFactory;
+            _entityContainer = entityContainer;
             _inputService = inputService;
-            _permanentLevel = new PermanentLevelSystem(gameFactory);
-            _rocketInputHandler = new RocketInputHandler(inputService, staticData);
+            _coroutineRunner = coroutineRunner;
         }
 
-        public void Enter() => _sceneLoader.LoadScene(GameScene, PrepareGame);
+        public void Enter()
+        {
+            SetEntities();
+            _levelCamera.EnableRocketTracking();
+            _rocket.OnExplode += DefineGameOver;
+            _gameOverWindow.OnRetryClick += RetryGame;
+            _coroutineRunner.StartCoroutine(StartRocket());
+        }
 
         public void Exit()
         {
@@ -49,38 +50,28 @@ namespace Code.Infrastructure.StateMachine.States
             _gameOverWindow.OnRetryClick -= RetryGame;
         }
 
-        private void PrepareGame()
+        private void SetEntities()
         {
-            CreateUI();
-            CreateRocket();
-            PreparePermanentLevel();
-            PrepareLevelCamera();
-            _rocketInputHandler.ConnectRocketInput(_rocket);
+            _permanentLevel = _entityContainer.GetEntity<PermanentLevelSystem>();
+            _rocketInputHandler = _entityContainer.GetEntity<RocketInputHandler>();
+            _rocket = _entityContainer.GetEntity<Rocket>();
+            _gameOverWindow = _entityContainer.GetEntity<GameOverWindow>();
+            _levelCamera = _entityContainer.GetEntity<LevelCamera>();
         }
 
-        private void PreparePermanentLevel()
+        private IEnumerator StartRocket()
         {
-            _permanentLevel.SetStarterParts();
-            _permanentLevel.SetRocketView(_rocket);
-        }
-
-        private void CreateRocket()
-        {
-            _rocket = _gameFactory.CreateRocket();
-            _rocket.OnExplode += DefineGameOver;
-        }
-
-        private void CreateUI()
-        {
-            Transform canvas = _uiFactory.CreateRootCanvas().transform;
-            _gameOverWindow = _uiFactory.CreateGameOverWindow(canvas);
-            _gameOverWindow.OnRetryClick += RetryGame;
-        }
-
-        private void PrepareLevelCamera()
-        {
-            _levelCamera = _gameFactory.CreateLevelCamera(Camera.main, _rocket);
-            _levelCamera.EnableRocketTracking();
+            _rocket.EnableFly();
+            float flyTime = 0f;
+            while (flyTime < 1.5f)
+            {
+                _rocket.Move(0);
+                flyTime += Time.deltaTime;
+                yield return null;
+            }
+            _rocket.DisableFly();
+            _rocket.Activate();
+            _inputService.Enable();
         }
 
         private void DefineGameOver()
@@ -93,7 +84,7 @@ namespace Code.Infrastructure.StateMachine.States
         private void RetryGame()
         {
             _gameOverWindow.Hide();
-            _stateMachine.Enter<GameplayState>();
+            _stateMachine.Enter<LoadGameState>();
         }
     }
 }

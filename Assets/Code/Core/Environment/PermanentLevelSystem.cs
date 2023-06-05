@@ -1,42 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using Code.Services.EntityContainer;
 using Code.Services.Factories.GameFactory;
-using Code.Services.Factories.UIFactory;
 
 namespace Code.Core.Environment
 {
-    public class PermanentLevelSystem : IDisposable
+    public class PermanentLevelSystem : IFactoryEntity, IDisposable
     {
         private readonly IGameFactory _gameFactory;
         private readonly Random _random = new Random();
-        private List<EnvironmentPart> _activeParts;
-        private EnvironmentPart _startPart;
+        private readonly EnvironmentPart _startPart;
+        private readonly Rocket.Rocket _rocket;
+        private readonly float _partReplaceDistance;
+
+        private EnvironmentPart[] _levelParts;
         private EnvironmentPart _lastPart;
 
-        private const float RocketDistance = 20;
-        private Rocket.Rocket _rocket;
-
-        public PermanentLevelSystem(IGameFactory gameFactory) => _gameFactory = gameFactory;
-
-        public void SetStarterParts()
+        public PermanentLevelSystem(EnvironmentPart[] levelParts, EnvironmentPart startPart, 
+            Rocket.Rocket rocket, float partReplaceDistance)
         {
-            _lastPart = _startPart = _gameFactory.CreateStartEnvironmentPart();
-            _activeParts = _gameFactory.CreateEnvironmentParts();
+            _partReplaceDistance = partReplaceDistance;
+            _levelParts = levelParts;
+            _rocket = rocket;
+            _rocket.OnUpdate += CompareRocketDistance;
+            _lastPart = _startPart = startPart;
             ReplaceLevelPartsRandomly();
         }
 
-        public void SetRocketView(Rocket.Rocket rocket)
-        {
-            _rocket = rocket;
-            _rocket.OnUpdate += CompareRocketDistance;
-        }
-        
         public void Dispose() => _rocket.OnUpdate -= CompareRocketDistance;
 
         private void CompareRocketDistance()
         {
-            if (!(_rocket.transform.position.y > _lastPart.EndPosition.position.y - RocketDistance)) return;
+            if (!(_rocket.transform.position.y > _lastPart.EndPosition.position.y - _partReplaceDistance)) return;
             
             if(_lastPart == _startPart)
                 ReplaceLevelPartsRandomly();
@@ -46,8 +41,8 @@ namespace Code.Core.Environment
 
         private void ReplaceLevelPartsRandomly()
         {
-            _activeParts = _activeParts.OrderBy(p => _random.Next()).ToList();
-            foreach (EnvironmentPart part in _activeParts) 
+            _levelParts = _levelParts.OrderBy(p => _random.Next()).ToArray();
+            foreach (EnvironmentPart part in _levelParts) 
                 PlacePartToEnd(part);
         }
 

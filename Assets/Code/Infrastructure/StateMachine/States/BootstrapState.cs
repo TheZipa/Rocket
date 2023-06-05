@@ -1,5 +1,6 @@
 using Code.Infrastructure.StateMachine.GameStateMachine;
 using Code.Services.CoroutineRunner;
+using Code.Services.EntityContainer;
 using Code.Services.Factories.GameFactory;
 using Code.Services.Factories.UIFactory;
 using Code.Services.Input;
@@ -23,7 +24,7 @@ namespace Code.Infrastructure.StateMachine.States
             RegisterServices(container);
         }
 
-        public void Enter() => _gameStateMachine.Enter<GameplayState>();
+        public void Enter() => _gameStateMachine.Enter<LoadGameState>();
 
         public void Exit()
         {
@@ -33,6 +34,7 @@ namespace Code.Infrastructure.StateMachine.States
         {
             container.RegisterSingle<IGameStateMachine>(_gameStateMachine);
             container.RegisterSingle<ICoroutineRunner>(_coroutineRunner);
+            container.RegisterSingle<IEntityContainer>(new EntityContainer());
             container.RegisterSingle<IStaticDataProvider>(new StaticDataProvider());
             container.RegisterSingle<ISceneLoader>(new SceneLoader());
             container.RegisterSingle<IInputService>(new InputService(_coroutineRunner));
@@ -50,9 +52,11 @@ namespace Code.Infrastructure.StateMachine.States
         }
 
         private void RegisterGameFactory(ServiceContainer.ServiceContainer container) =>
-            container.RegisterSingle<IGameFactory>(new GameFactory(container.Single<IStaticData>()));
+            container.RegisterSingle<IGameFactory>(new GameFactory(container.Single<IStaticData>(),
+                container.Single<IEntityContainer>(), container.Single<IInputService>()));
 
         private void RegisterUIFactory(ServiceContainer.ServiceContainer container) =>
-            container.RegisterSingle<IUIFactory>(new UIFactory(container.Single<IStaticData>()));
+            container.RegisterSingle<IUIFactory>(new UIFactory(container.Single<IStaticData>(),
+                container.Single<IEntityContainer>()));
     }
 }

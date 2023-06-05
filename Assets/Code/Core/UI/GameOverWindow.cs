@@ -1,10 +1,11 @@
 ﻿using System;
+using Code.Services.EntityContainer;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Code.Core.UI
 {
-    public class GameOverWindow : MonoBehaviour
+    public class GameOverWindow : UIElement, IFactoryEntity
     {
         public event Action OnRetryClick;
         
@@ -13,15 +14,11 @@ namespace Code.Core.UI
 
         private readonly int _showAnimationHash = Animator.StringToHash("Show");
 
-        public void Show()
+        private void Start()
         {
-            gameObject.SetActive(true);
-            //_animator.SetTrigger(_showAnimationHash);
+            _retryButton.onClick.AddListener(SendRetry);
+            Hide();
         }
-
-        public void Hide() => gameObject.SetActive(false);
-
-        private void Start() => _retryButton.onClick.AddListener(SendRetry);
 
         private void SendRetry() => OnRetryClick?.Invoke();
 

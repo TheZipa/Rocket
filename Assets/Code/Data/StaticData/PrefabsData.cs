@@ -1,6 +1,7 @@
 using Code.Core.Environment;
 using Code.Core.Rocket;
 using Code.Core.UI;
+using Code.Core.UI.Menu;
 using UnityEngine;
 
 namespace Code.Data.StaticData
@@ -14,6 +15,7 @@ namespace Code.Data.StaticData
         public Rocket RocketPrefab;
         [Header("UI")]
         public GameObject RootCanvasPrefab;
+        public MainMenu MainMenuPrefab;
         public GameOverWindow GameOverWindowPrefab;
     }
 }

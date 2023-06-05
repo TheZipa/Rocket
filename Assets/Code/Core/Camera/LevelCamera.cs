@@ -1,8 +1,9 @@
+using Code.Services.EntityContainer;
 using UnityEngine;
 
 namespace Code.Core.Camera
 {
-    public class LevelCamera : MonoBehaviour
+    public class LevelCamera : MonoBehaviour, IFactoryEntity
     {
         private Rocket.Rocket _rocket;
         private float _screenOffset;

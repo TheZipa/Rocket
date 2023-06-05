@@ -1,6 +1,7 @@
 using Code.Infrastructure.StateMachine.GameStateMachine;
 using Code.Infrastructure.StateMachine.States;
 using Code.Services.CoroutineRunner;
+using Code.Services.EntityContainer;
 using UnityEngine;
 
 namespace Code.Infrastructure
@@ -16,5 +17,7 @@ namespace Code.Infrastructure
 
             DontDestroyOnLoad(this);
         }
+
+        private void OnDestroy() => ServiceContainer.ServiceContainer.Container.Single<IEntityContainer>().Dispose();
     }
 }

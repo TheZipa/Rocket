@@ -3,6 +3,8 @@ using System.Linq;
 using Code.Core.Camera;
 using Code.Core.Environment;
 using Code.Core.Rocket;
+using Code.Services.EntityContainer;
+using Code.Services.Input;
 using Code.Services.StaticData;
 using UnityEngine;
 
@@ -11,32 +13,45 @@ namespace Code.Services.Factories.GameFactory
     public class GameFactory : IGameFactory
     {
         private readonly IStaticData _staticData;
+        private readonly IEntityContainer _entityContainer;
+        private readonly IInputService _inputService;
 
-        public GameFactory(IStaticData staticData) => _staticData = staticData;
-
-        public List<EnvironmentPart> CreateEnvironmentParts()
+        public GameFactory(IStaticData staticData, IEntityContainer entityContainer, IInputService inputService)
         {
-            EnvironmentPart[] partPrefabs = _staticData.Prefabs.EnvironmentPartPrefabs;
-            List<EnvironmentPart> parts = new List<EnvironmentPart>(partPrefabs.Length);
-            parts.AddRange(partPrefabs.Select(Object.Instantiate));
-            return parts;
+            _staticData = staticData;
+            _entityContainer = entityContainer;
+            _inputService = inputService;
         }
 
-        public LevelCamera CreateLevelCamera(Camera camera, Rocket rocket)
+        public void CreateRocket(float yPosition)
+        {
+            Rocket rocket = Object.Instantiate(_staticData.Prefabs.RocketPrefab, new Vector3(0, yPosition), Quaternion.identity);
+            rocket.Construct(_staticData.MainConfiguration.MaxRocketSpeed);
+            _entityContainer.RegisterEntity(new RocketInputHandler(_inputService, rocket, _staticData.MainConfiguration.ClampAngle));
+            _entityContainer.RegisterEntity(rocket);
+        }
+
+        public void CreatePermanentEnvironmentSystem(EnvironmentPart startEnvironmentPart) =>
+            _entityContainer.RegisterEntity(new PermanentLevelSystem(CreateEnvironmentParts(), startEnvironmentPart
+                ,_entityContainer.GetEntity<Rocket>(), _staticData.MainConfiguration.EnvironmentPartReplaceDistance));
+
+        public void CreateLevelCamera(Camera camera, float yPosition)
         {
             LevelCamera levelCamera = camera.gameObject.AddComponent<LevelCamera>();
-            levelCamera.Construct(rocket, _staticData.MainConfiguration.GameOverCameraOffset);
-            return levelCamera;
+            levelCamera.transform.position = new Vector3(0, yPosition, levelCamera.transform.position.z);
+            levelCamera.Construct(_entityContainer.GetEntity<Rocket>(), _staticData.MainConfiguration.GameOverCameraOffset);
+            _entityContainer.RegisterEntity(levelCamera);
         }
 
         public EnvironmentPart CreateStartEnvironmentPart() =>
             Object.Instantiate(_staticData.Prefabs.StartEnvironmentPartPrefab);
 
-        public Rocket CreateRocket()
+        private EnvironmentPart[] CreateEnvironmentParts()
         {
-            Rocket rocket = Object.Instantiate(_staticData.Prefabs.RocketPrefab);
-            rocket.Construct(_staticData.MainConfiguration.MaxRocketSpeed);
-            return rocket;
+            EnvironmentPart[] partPrefabs = _staticData.Prefabs.EnvironmentPartPrefabs;
+            List<EnvironmentPart> parts = new List<EnvironmentPart>(partPrefabs.Length);
+            parts.AddRange(partPrefabs.Select(Object.Instantiate));
+            return parts.ToArray();
         }
     }
 }

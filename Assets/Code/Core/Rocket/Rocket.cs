@@ -1,9 +1,10 @@
 ﻿using System;
+using Code.Services.EntityContainer;
 using UnityEngine;
 
 namespace Code.Core.Rocket
 {
-    public class Rocket : MonoBehaviour
+    public class Rocket : MonoBehaviour, IFactoryEntity
     {
         public event Action OnExplode;
         public event Action OnUpdate;
@@ -12,11 +13,12 @@ namespace Code.Core.Rocket
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private RocketExplosion _explosionEffect;
         [SerializeField] private RocketMovement _movement;
+        [SerializeField] private Collider _collider;
         [SerializeField] private GameObject _view;
-        
-        private const float StartVelocity = 6f;
 
         public void Construct(float maxSpeed) => _movement.Construct(maxSpeed);
+
+        public void Activate() => _collider.enabled = true;
 
         public void EnableFly()
         {
@@ -41,7 +43,11 @@ namespace Code.Core.Rocket
             OnExplode?.Invoke();
         }
 
-        private void Start() => _rigidbody.velocity = new Vector3(0, StartVelocity, 0);
+        private void Start()
+        {
+            _rigidbody.isKinematic = true;
+            _collider.enabled = false;
+        }
 
         private void Update() => OnUpdate?.Invoke();
 

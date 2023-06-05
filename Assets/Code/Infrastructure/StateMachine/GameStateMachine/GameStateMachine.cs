@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using Code.Infrastructure.StateMachine.States;
 using Code.Services.CoroutineRunner;
+using Code.Services.EntityContainer;
 using Code.Services.Factories.GameFactory;
 using Code.Services.Factories.UIFactory;
 using Code.Services.Input;
 using Code.Services.SceneLoader;
-using Code.Services.StaticData;
 
 namespace Code.Infrastructure.StateMachine.GameStateMachine
 {
@@ -20,9 +20,11 @@ namespace Code.Infrastructure.StateMachine.GameStateMachine
             _states = new Dictionary<Type, IExitableState>()
             {
                 [typeof(BootstrapState)] = new BootstrapState(this, container, coroutineRunner),
-                [typeof(GameplayState)] = new GameplayState(this, container.Single<ISceneLoader>(),
-                    container.Single<IGameFactory>(), container.Single<IUIFactory>(), 
-                    container.Single<IInputService>(), container.Single<IStaticData>()),
+                [typeof(LoadGameState)] = new LoadGameState(this, container.Single<ISceneLoader>(),
+                        container.Single<IUIFactory>(), container.Single<IGameFactory>()),
+                [typeof(MenuState)] = new MenuState(this, container.Single<IEntityContainer>()),
+                [typeof(GameplayState)] = new GameplayState(this, container.Single<IEntityContainer>(),
+                    container.Single<IInputService>(), coroutineRunner),
             };
         }
 
