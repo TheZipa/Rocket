@@ -1,4 +1,4 @@
-using Cinemachine;
+using Code.Core.Camera;
 using Code.Core.Environment;
 using Code.Core.Rocket;
 using Code.Core.UI;
@@ -24,6 +24,7 @@ namespace Code.Infrastructure.StateMachine.States
 
         private const string GameScene = "Game";
         private GameOverWindow _gameOverWindow;
+        private LevelCamera _levelCamera;
         private Rocket _rocket;
 
         public GameplayState(IGameStateMachine stateMachine, ISceneLoader sceneLoader, IGameFactory gameFactory,
@@ -53,7 +54,7 @@ namespace Code.Infrastructure.StateMachine.States
             CreateUI();
             CreateRocket();
             PreparePermanentLevel();
-            CreateVirtualCamera();
+            PrepareLevelCamera();
             _rocketInputHandler.ConnectRocketInput(_rocket);
         }
 
@@ -76,15 +77,16 @@ namespace Code.Infrastructure.StateMachine.States
             _gameOverWindow.OnRetryClick += RetryGame;
         }
 
-        private void CreateVirtualCamera()
+        private void PrepareLevelCamera()
         {
-            CinemachineVirtualCamera playerVirtualCamera = _gameFactory.CreatePlayerVirtualCamera();
-            playerVirtualCamera.Follow = _rocket.transform;
+            _levelCamera = _gameFactory.CreateLevelCamera(Camera.main, _rocket);
+            _levelCamera.EnableRocketTracking();
         }
 
         private void DefineGameOver()
         {
             _gameOverWindow.Show();
+            _levelCamera.DisableRocketTracking();
             _inputService.Disable();
         }
 

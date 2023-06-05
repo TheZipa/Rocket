@@ -32,22 +32,19 @@ namespace Code.Core.Rocket
 
         public void Move(float angle) => _movement.Move(angle);
 
-        private void Start() => _rigidbody.velocity = new Vector3(0, StartVelocity, 0);
-
-        private void Update() => OnUpdate?.Invoke();
-
-        private void Explode()
+        public void Explode()
         {
             _view.SetActive(false);
             _explosionEffect.Show();
             _movement.Disable();
             _rigidbody.isKinematic = true;
-        }
-
-        private void OnCollisionEnter(Collision collision)
-        {
-            Explode();
             OnExplode?.Invoke();
         }
+
+        private void Start() => _rigidbody.velocity = new Vector3(0, StartVelocity, 0);
+
+        private void Update() => OnUpdate?.Invoke();
+
+        private void OnCollisionEnter(Collision collision) => Explode();
     }
 }

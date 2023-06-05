@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using Cinemachine;
+using Code.Core.Camera;
 using Code.Core.Environment;
 using Code.Core.Rocket;
 using Code.Infrastructure.ServiceContainer;
+using UnityEngine;
 
 namespace Code.Services.Factories.GameFactory
 {
@@ -10,7 +11,7 @@ namespace Code.Services.Factories.GameFactory
     {
         List<EnvironmentPart> CreateEnvironmentParts();
         Rocket CreateRocket();
-        CinemachineVirtualCamera CreatePlayerVirtualCamera();
         EnvironmentPart CreateStartEnvironmentPart();
+        LevelCamera CreateLevelCamera(Camera camera, Rocket rocket);
     }
 }

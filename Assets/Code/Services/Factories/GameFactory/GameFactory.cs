@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Cinemachine;
+using Code.Core.Camera;
 using Code.Core.Environment;
 using Code.Core.Rocket;
 using Code.Services.StaticData;
@@ -22,6 +22,13 @@ namespace Code.Services.Factories.GameFactory
             return parts;
         }
 
+        public LevelCamera CreateLevelCamera(Camera camera, Rocket rocket)
+        {
+            LevelCamera levelCamera = camera.gameObject.AddComponent<LevelCamera>();
+            levelCamera.Construct(rocket, _staticData.MainConfiguration.GameOverCameraOffset);
+            return levelCamera;
+        }
+
         public EnvironmentPart CreateStartEnvironmentPart() =>
             Object.Instantiate(_staticData.Prefabs.StartEnvironmentPartPrefab);
 
@@ -31,8 +38,5 @@ namespace Code.Services.Factories.GameFactory
             rocket.Construct(_staticData.MainConfiguration.MaxRocketSpeed);
             return rocket;
         }
-
-        public CinemachineVirtualCamera CreatePlayerVirtualCamera() =>
-            Object.Instantiate(_staticData.Prefabs.PlayerVirtualCameraPrefab);
     }
 }

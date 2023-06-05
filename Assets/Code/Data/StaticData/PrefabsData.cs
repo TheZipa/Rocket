@@ -1,4 +1,3 @@
-using Cinemachine;
 using Code.Core.Environment;
 using Code.Core.Rocket;
 using Code.Core.UI;
@@ -13,7 +12,6 @@ namespace Code.Data.StaticData
         public EnvironmentPart[] EnvironmentPartPrefabs;
         public EnvironmentPart StartEnvironmentPartPrefab;
         public Rocket RocketPrefab;
-        public CinemachineVirtualCamera PlayerVirtualCameraPrefab;
         [Header("UI")]
         public GameObject RootCanvasPrefab;
         public GameOverWindow GameOverWindowPrefab;

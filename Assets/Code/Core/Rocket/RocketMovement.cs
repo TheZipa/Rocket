@@ -28,7 +28,7 @@ namespace Code.Core.Rocket
         {
             _rigidbody.isKinematic = false;
             _rigidbody.velocity = transform.up * _currentSpeed;
-            StopCoroutine(_overclockRoutine);
+            if(_overclockRoutine != null) StopCoroutine(_overclockRoutine);
         }
 
         public void Move(float angle)
