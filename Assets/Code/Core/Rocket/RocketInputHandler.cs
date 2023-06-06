@@ -1,7 +1,6 @@
 using System;
 using Code.Services.EntityContainer;
 using Code.Services.Input;
-using Code.Services.StaticData;
 using UnityEngine;
 
 namespace Code.Core.Rocket

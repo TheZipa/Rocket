@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2506078038105625062}
   - component: {fileID: 4372290591463169083}
   - component: {fileID: 566034534012286399}
+  - component: {fileID: 6136774566090548169}
   m_Layer: 0
   m_Name: Box053
   m_TagString: Untagged
@@ -99,6 +100,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 8.601223, y: 3.1483378, z: 3.0000007}
   m_Center: {x: 10.400966, y: -3.3690016, z: 0.5436021}
+--- !u!114 &6136774566090548169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504555661387321175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6315821ea7f94980ad278ac24b7a934a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _positions:
+  - {x: 10.29, y: 10, z: 3.07}
+  - {x: 10.29, y: 18, z: 3.07}
+  _speed: 1.75
 --- !u!1 &1700581527001866198
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,6 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BeginPosition: {fileID: 7468988523546003501}
   EndPosition: {fileID: 6264937524537043690}
+  _obstacles: []
 --- !u!1 &1790547125928477782
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,6 +444,7 @@ GameObject:
   - component: {fileID: 4510979357142567227}
   - component: {fileID: 8804439399570609035}
   - component: {fileID: 475012993137891252}
+  - component: {fileID: 7326709279396741514}
   m_Layer: 0
   m_Name: Box053 (2)
   m_TagString: Untagged
@@ -513,6 +532,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 8.601223, y: 3.1483378, z: 3.0000007}
   m_Center: {x: 10.400966, y: -3.3690016, z: 0.5436021}
+--- !u!114 &7326709279396741514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5078486212405318871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6315821ea7f94980ad278ac24b7a934a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _positions:
+  - {x: 1.35, y: 2, z: 3.02}
+  - {x: 1.35, y: 7, z: 3.02}
+  _speed: 1.75
 --- !u!1 &6041614779174685008
 GameObject:
   m_ObjectHideFlags: 0

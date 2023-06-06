@@ -16,6 +16,8 @@ MonoBehaviour:
   - {fileID: 6579956708608045395, guid: 621d14155ae31e2499a9c391aaedde80, type: 3}
   - {fileID: 6579956708608045395, guid: b4995633cd65104478323e7938f3d762, type: 3}
   - {fileID: 6579956708608045395, guid: 442f1172e6ef1694fa2dd4a9bde2b3ea, type: 3}
+  - {fileID: 6579956708608045395, guid: 6b59c0e4502904c1a98f62295e5a7bc7, type: 3}
+  - {fileID: 6579956708608045395, guid: a86181074c78b4e88a1fdc2d3d291b63, type: 3}
   StartEnvironmentPartPrefab: {fileID: 6579956708608045395, guid: 13dd6f1d527ea43408b454545fe78924, type: 3}
   RocketPrefab: {fileID: 7158963749643439247, guid: 1d5d1af20f1c09342bc74fa63f7bdb19, type: 3}
   RootCanvasPrefab: {fileID: 8927380304441350616, guid: 17f494cd2bfab493fa28ae48dd62b1a8, type: 3}

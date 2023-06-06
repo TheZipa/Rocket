@@ -7,6 +7,7 @@ using Code.Infrastructure.StateMachine.GameStateMachine;
 using Code.Services.CoroutineRunner;
 using Code.Services.EntityContainer;
 using Code.Services.Input;
+using Code.Services.StaticData;
 using UnityEngine;
 
 namespace Code.Infrastructure.StateMachine.States
@@ -17,20 +18,22 @@ namespace Code.Infrastructure.StateMachine.States
         private readonly IEntityContainer _entityContainer;
         private readonly IInputService _inputService;
         private readonly ICoroutineRunner _coroutineRunner;
+        private readonly IStaticData _staticData;
+
         private PermanentLevelSystem _permanentLevel;
         private RocketInputHandler _rocketInputHandler;
-        
         private GameOverWindow _gameOverWindow;
         private LevelCamera _levelCamera;
         private Rocket _rocket;
 
         public GameplayState(IGameStateMachine stateMachine, IEntityContainer entityContainer, 
-            IInputService inputService, ICoroutineRunner coroutineRunner)
+            IInputService inputService, ICoroutineRunner coroutineRunner, IStaticData staticData)
         {
             _stateMachine = stateMachine;
             _entityContainer = entityContainer;
             _inputService = inputService;
             _coroutineRunner = coroutineRunner;
+            _staticData = staticData;
         }
 
         public void Enter()
@@ -63,7 +66,7 @@ namespace Code.Infrastructure.StateMachine.States
         {
             _rocket.EnableFly();
             float flyTime = 0f;
-            while (flyTime < 1.5f)
+            while (flyTime < _staticData.MainConfiguration.StartRocketFlyTime)
             {
                 _rocket.Move(0);
                 flyTime += Time.deltaTime;

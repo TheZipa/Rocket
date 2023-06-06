@@ -7,6 +7,7 @@ using Code.Services.Factories.GameFactory;
 using Code.Services.Factories.UIFactory;
 using Code.Services.Input;
 using Code.Services.SceneLoader;
+using Code.Services.StaticData;
 
 namespace Code.Infrastructure.StateMachine.GameStateMachine
 {
@@ -24,7 +25,7 @@ namespace Code.Infrastructure.StateMachine.GameStateMachine
                         container.Single<IUIFactory>(), container.Single<IGameFactory>()),
                 [typeof(MenuState)] = new MenuState(this, container.Single<IEntityContainer>()),
                 [typeof(GameplayState)] = new GameplayState(this, container.Single<IEntityContainer>(),
-                    container.Single<IInputService>(), coroutineRunner),
+                    container.Single<IInputService>(), coroutineRunner, container.Single<IStaticData>()),
             };
         }
 

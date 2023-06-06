@@ -33,7 +33,8 @@ namespace Code.Services.Factories.GameFactory
 
         public void CreatePermanentEnvironmentSystem(EnvironmentPart startEnvironmentPart) =>
             _entityContainer.RegisterEntity(new PermanentLevelSystem(CreateEnvironmentParts(), startEnvironmentPart
-                ,_entityContainer.GetEntity<Rocket>(), _staticData.MainConfiguration.EnvironmentPartReplaceDistance));
+                ,_entityContainer.GetEntity<Rocket>(), _staticData.MainConfiguration.EnvironmentPartReplaceDistance,
+                _staticData.MainConfiguration.MaxLevelPartsCount));
 
         public void CreateLevelCamera(Camera camera, float yPosition)
         {
@@ -50,8 +51,15 @@ namespace Code.Services.Factories.GameFactory
         {
             EnvironmentPart[] partPrefabs = _staticData.Prefabs.EnvironmentPartPrefabs;
             List<EnvironmentPart> parts = new List<EnvironmentPart>(partPrefabs.Length);
-            parts.AddRange(partPrefabs.Select(Object.Instantiate));
+            parts.AddRange(partPrefabs.Select(CreateLevelEnvironmentPart));
             return parts.ToArray();
+        }
+
+        private EnvironmentPart CreateLevelEnvironmentPart(EnvironmentPart prefab)
+        {
+            EnvironmentPart environmentPart = Object.Instantiate(prefab);
+            environmentPart.Disable();
+            return environmentPart;
         }
     }
 }

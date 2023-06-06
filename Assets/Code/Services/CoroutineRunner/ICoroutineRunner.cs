@@ -7,5 +7,6 @@ namespace Code.Services.CoroutineRunner
     public interface ICoroutineRunner : IService
     {
         Coroutine StartCoroutine(IEnumerator routine);
+        void StopCoroutine(Coroutine coroutine);
     }
 }

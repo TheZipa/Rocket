@@ -15,4 +15,6 @@ MonoBehaviour:
   MaxRocketSpeed: 11
   GameOverCameraOffset: 20
   EnvironmentPartReplaceDistance: 25
+  StartRocketFlyTime: 2
+  MaxLevelPartsCount: 3
   ClampAngle: 2

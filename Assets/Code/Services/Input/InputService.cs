@@ -15,9 +15,9 @@ namespace Code.Services.Input
         private readonly ICoroutineRunner _coroutineRunner;
         private readonly InputActions _inputActions = new InputActions();
         private readonly float _screenHalf;
-        
-        private bool _isDrag;
-        
+
+        private Coroutine _dragRoutine;
+
         public InputService(ICoroutineRunner coroutineRunner)
         {
             _screenHalf = Screen.width * 0.5f;
@@ -33,7 +33,7 @@ namespace Code.Services.Input
 
         public void Disable()
         {
-            _isDrag = false;
+            FinishDragRoutine();
             _inputActions.Main.Press.performed -= StartDrag;
             _inputActions.Main.Press.canceled -= StopDrag;
             _inputActions.Disable();
@@ -41,25 +41,32 @@ namespace Code.Services.Input
 
         private void StartDrag(InputAction.CallbackContext context)
         {
-            _isDrag = true;
-            _coroutineRunner.StartCoroutine(Drag());
+            FinishDragRoutine();
+            _dragRoutine = _coroutineRunner.StartCoroutine(Drag());
             OnDragStart?.Invoke();
         }
 
         private void StopDrag(InputAction.CallbackContext context)
         {
-            _isDrag = false;
+            FinishDragRoutine();
             OnDragEnd?.Invoke();
         }
 
         private IEnumerator Drag()
         {
-            while (_isDrag)
+            while (true)
             {
                 yield return null;
                 float x = _inputActions.Main.Screen.ReadValue<Vector2>().x;
                 OnDrag?.Invoke(x - _screenHalf);
             }
+        }
+
+        private void FinishDragRoutine()
+        {
+            if (_dragRoutine == null) return; 
+            _coroutineRunner.StopCoroutine(_dragRoutine);
+            _dragRoutine = null;
         }
     }
 }
