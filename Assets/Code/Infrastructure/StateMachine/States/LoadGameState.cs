@@ -42,6 +42,7 @@ namespace Code.Infrastructure.StateMachine.States
             Transform rootCanvas = _uiFactory.CreateRootCanvas().transform;
             _uiFactory.CreateMainMenu(rootCanvas);
             _uiFactory.CreateGameOverWindow(rootCanvas);
+            _uiFactory.CreateMeterCounterView(rootCanvas);
         }
 
         private void CreateGameplayComponents()
@@ -51,6 +52,7 @@ namespace Code.Infrastructure.StateMachine.States
             _gameFactory.CreateRocket(startYPosition);
             _gameFactory.CreatePermanentEnvironmentSystem(startEnvironmentPart);
             _gameFactory.CreateLevelCamera(Camera.main, startYPosition);
+            _gameFactory.CreateMeterCounterSystem();
         }
     }
 }

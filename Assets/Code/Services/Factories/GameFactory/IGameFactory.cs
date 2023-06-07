@@ -10,5 +10,6 @@ namespace Code.Services.Factories.GameFactory
         void CreateLevelCamera(Camera camera, float yPosition);
         void CreateRocket(float yPosition);
         EnvironmentPart CreateStartEnvironmentPart();
+        void CreateMeterCounterSystem();
     }
 }

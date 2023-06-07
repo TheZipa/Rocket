@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Camera;
 using Code.Core.Environment;
+using Code.Core.MeterCounter;
 using Code.Core.Rocket;
+using Code.Core.UI.Gameplay;
 using Code.Services.EntityContainer;
 using Code.Services.Input;
 using Code.Services.StaticData;
@@ -46,6 +48,10 @@ namespace Code.Services.Factories.GameFactory
 
         public EnvironmentPart CreateStartEnvironmentPart() =>
             Object.Instantiate(_staticData.Prefabs.StartEnvironmentPartPrefab);
+
+        public void CreateMeterCounterSystem() =>
+            _entityContainer.RegisterEntity(new MeterCounterSystem(_entityContainer.GetEntity<MeterCounterView>(),
+                _entityContainer.GetEntity<Rocket>()));
 
         private EnvironmentPart[] CreateEnvironmentParts()
         {

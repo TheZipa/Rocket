@@ -6,6 +6,8 @@ using Code.Services.EntityContainer;
 using Code.Services.Factories.GameFactory;
 using Code.Services.Factories.UIFactory;
 using Code.Services.Input;
+using Code.Services.PersistentProgress;
+using Code.Services.SaveLoad;
 using Code.Services.SceneLoader;
 using Code.Services.StaticData;
 
@@ -21,11 +23,14 @@ namespace Code.Infrastructure.StateMachine.GameStateMachine
             _states = new Dictionary<Type, IExitableState>()
             {
                 [typeof(BootstrapState)] = new BootstrapState(this, container, coroutineRunner),
+                [typeof(LoadProgressState)] = new LoadProgressState(this, 
+                    container.Single<IPersistentProgress>(), container.Single<ISaveLoad>()),
                 [typeof(LoadGameState)] = new LoadGameState(this, container.Single<ISceneLoader>(),
                         container.Single<IUIFactory>(), container.Single<IGameFactory>()),
                 [typeof(MenuState)] = new MenuState(this, container.Single<IEntityContainer>()),
                 [typeof(GameplayState)] = new GameplayState(this, container.Single<IEntityContainer>(),
-                    container.Single<IInputService>(), coroutineRunner, container.Single<IStaticData>()),
+                    container.Single<IInputService>(), container.Single<IPersistentProgress>(),
+                    container.Single<IStaticData>()),
             };
         }
 

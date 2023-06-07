@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Code.Services.EntityContainer;
 using UnityEngine;
 
@@ -16,9 +17,30 @@ namespace Code.Core.Rocket
         [SerializeField] private Collider _collider;
         [SerializeField] private GameObject _view;
 
+        private bool _isExploded;
+
         public void Construct(float maxSpeed) => _movement.Construct(maxSpeed);
 
-        public void Activate() => _collider.enabled = true;
+        public void Launch(float launchTime, Action onLaunched = null)
+        {
+            _isExploded = false;
+            StartCoroutine(StartLaunch(launchTime, onLaunched));
+        }
+
+        private IEnumerator StartLaunch(float launchTime, Action onLaunched)
+        {
+            EnableFly();
+            float flyTime = 0f;
+            while (flyTime < launchTime)
+            {
+                Move(0);
+                flyTime += Time.deltaTime;
+                yield return null;
+            }
+            DisableFly();
+            _collider.enabled = true;
+            onLaunched?.Invoke();
+        }
 
         public void EnableFly()
         {
@@ -39,7 +61,7 @@ namespace Code.Core.Rocket
             _view.SetActive(false);
             _explosionEffect.Show();
             _movement.Disable();
-            _rigidbody.isKinematic = true;
+            _isExploded = _rigidbody.isKinematic = true;
             OnExplode?.Invoke();
         }
 
@@ -51,6 +73,10 @@ namespace Code.Core.Rocket
 
         private void Update() => OnUpdate?.Invoke();
 
-        private void OnCollisionEnter(Collision collision) => Explode();
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (_isExploded) return;
+            Explode();
+        }
     }
 }
