@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Code.Infrastructure.StateMachine.States;
+using Code.Services.CollectableService;
 using Code.Services.CoroutineRunner;
 using Code.Services.EntityContainer;
 using Code.Services.Factories.GameFactory;
@@ -32,7 +33,7 @@ namespace Code.Infrastructure.StateMachine.GameStateMachine
                 [typeof(MenuState)] = new MenuState(this, container.Single<IEntityContainer>(), loadingScreen),
                 [typeof(GameplayState)] = new GameplayState(this, container.Single<IEntityContainer>(),
                     loadingScreen, container.Single<IInputService>(), 
-                    container.Single<IPersistentProgress>(), container.Single<IStaticData>()),
+                    container.Single<ICollectableService>(), container.Single<IStaticData>()),
             };
         }
 

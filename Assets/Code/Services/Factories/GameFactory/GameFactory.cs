@@ -5,8 +5,10 @@ using Code.Core.Environment;
 using Code.Core.MeterCounter;
 using Code.Core.Rocket;
 using Code.Core.UI.Gameplay;
+using Code.Services.CollectableService;
 using Code.Services.EntityContainer;
 using Code.Services.Input;
+using Code.Services.PersistentProgress;
 using Code.Services.StaticData;
 using UnityEngine;
 
@@ -17,12 +19,17 @@ namespace Code.Services.Factories.GameFactory
         private readonly IStaticData _staticData;
         private readonly IEntityContainer _entityContainer;
         private readonly IInputService _inputService;
+        private readonly IPersistentProgress _progress;
+        private readonly ICollectableService _collectableService;
 
-        public GameFactory(IStaticData staticData, IEntityContainer entityContainer, IInputService inputService)
+        public GameFactory(IStaticData staticData, IEntityContainer entityContainer, 
+            IInputService inputService, IPersistentProgress progress, ICollectableService collectableService)
         {
             _staticData = staticData;
             _entityContainer = entityContainer;
             _inputService = inputService;
+            _progress = progress;
+            _collectableService = collectableService;
         }
 
         public void CreateRocket(float yPosition)
@@ -50,7 +57,7 @@ namespace Code.Services.Factories.GameFactory
             Object.Instantiate(_staticData.Prefabs.StartEnvironmentPartPrefab);
 
         public void CreateMeterCounterSystem() =>
-            _entityContainer.RegisterEntity(new MeterCounterSystem(_entityContainer.GetEntity<MeterCounterView>(),
+            _entityContainer.RegisterEntity(new MeterCounterSystem(_progress, _entityContainer.GetEntity<MeterCounterView>(),
                 _entityContainer.GetEntity<Rocket>()));
 
         private EnvironmentPart[] CreateEnvironmentParts()
@@ -65,6 +72,7 @@ namespace Code.Services.Factories.GameFactory
         {
             EnvironmentPart environmentPart = Object.Instantiate(prefab);
             environmentPart.Disable();
+            _collectableService.RegisterCollectables(environmentPart.CollectableItems);
             return environmentPart;
         }
     }

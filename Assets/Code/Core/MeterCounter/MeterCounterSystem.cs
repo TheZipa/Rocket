@@ -1,19 +1,22 @@
 using System;
 using Code.Core.UI.Gameplay;
 using Code.Services.EntityContainer;
+using Code.Services.PersistentProgress;
 
 namespace Code.Core.MeterCounter
 {
     public class MeterCounterSystem : IFactoryEntity
     {
         public float Meters { get; private set; }
-        
+
+        private readonly IPersistentProgress _progress;
         private readonly MeterCounterView _counterView;
         private readonly Rocket.Rocket _rocket;
         private float _lastRocketPosition;
 
-        public MeterCounterSystem(MeterCounterView counterView, Rocket.Rocket rocket)
+        public MeterCounterSystem(IPersistentProgress progress, MeterCounterView counterView, Rocket.Rocket rocket)
         {
+            _progress = progress;
             _counterView = counterView;
             _rocket = rocket;
             counterView.Hide();
@@ -31,6 +34,13 @@ namespace Code.Core.MeterCounter
         {
             _rocket.OnUpdate -= CompareRocketRaise;
             _counterView.Hide();
+        }
+        
+        public bool TryDefineRecord()
+        {
+            if (Meters <= _progress.Progress.MetersRecord) return false;
+            _progress.SetNewMeterRecord(Meters);
+            return true;
         }
 
         private void CompareRocketRaise()

@@ -3,12 +3,14 @@ using Code.Core.Environment;
 using Code.Core.MeterCounter;
 using Code.Core.Rocket;
 using Code.Core.UI.Gameplay;
+using Code.Data.Enums;
 using Code.Infrastructure.StateMachine.GameStateMachine;
+using Code.Services.CollectableService;
 using Code.Services.EntityContainer;
 using Code.Services.Input;
 using Code.Services.LoadingScreen;
-using Code.Services.PersistentProgress;
 using Code.Services.StaticData;
+using UnityEngine;
 
 namespace Code.Infrastructure.StateMachine.States
 {
@@ -18,7 +20,7 @@ namespace Code.Infrastructure.StateMachine.States
         private readonly IEntityContainer _entityContainer;
         private readonly ILoadingScreen _loadingScreen;
         private readonly IInputService _inputService;
-        private readonly IPersistentProgress _persistentProgress;
+        private readonly ICollectableService _collectableService;
         private readonly IStaticData _staticData;
 
         private PermanentLevelSystem _permanentLevel;
@@ -29,13 +31,13 @@ namespace Code.Infrastructure.StateMachine.States
         private Rocket _rocket;
 
         public GameplayState(IGameStateMachine stateMachine, IEntityContainer entityContainer, ILoadingScreen loadingScreen,
-            IInputService inputService, IPersistentProgress persistentProgress, IStaticData staticData)
+            IInputService inputService, ICollectableService collectableService, IStaticData staticData)
         {
             _stateMachine = stateMachine;
             _entityContainer = entityContainer;
             _loadingScreen = loadingScreen;
             _inputService = inputService;
-            _persistentProgress = persistentProgress;
+            _collectableService = collectableService;
             _staticData = staticData;
         }
 
@@ -44,6 +46,7 @@ namespace Code.Infrastructure.StateMachine.States
             SetEntities();
             _levelCamera.EnableRocketTracking();
             _rocket.OnExplode += DefineGameOver;
+            _rocket.OnCollect += CollectItem;
             _gameOverWindow.OnRetryClick += RetryGame;
             _rocket.Launch(_staticData.MainConfiguration.RocketLaunchTime, StartGameplay);
         }
@@ -54,7 +57,9 @@ namespace Code.Infrastructure.StateMachine.States
             _rocketInputHandler.Dispose();
             _permanentLevel.Dispose();
             _rocket.OnExplode -= DefineGameOver;
+            _rocket.OnCollect -= CollectItem;
             _gameOverWindow.OnRetryClick -= RetryGame;
+            _collectableService.CleanUp();
         }
 
         private void SetEntities()
@@ -67,17 +72,16 @@ namespace Code.Infrastructure.StateMachine.States
             _levelCamera = _entityContainer.GetEntity<LevelCamera>();
         }
 
+        private void CollectItem(Collider collectedCollider)
+        {
+            CollectableType collectableType = _collectableService.Collect(collectedCollider);
+            Debug.Log(_collectableService.CollectableProgressData.Coins);
+        }
+
         private void StartGameplay()
         {
             _meterCounterSystem.StartCounting();
             _inputService.Enable();
-        }
-
-        private bool UpdateRecord()
-        {
-            if (_meterCounterSystem.Meters <= _persistentProgress.Progress.MetersRecord) return false;
-            _persistentProgress.SetNewMeterRecord(_meterCounterSystem.Meters);
-            return true;
         }
 
         private void DefineGameOver()
@@ -85,8 +89,10 @@ namespace Code.Infrastructure.StateMachine.States
             _meterCounterSystem.StopCounting();
             _levelCamera.DisableRocketTracking();
             _inputService.Disable();
-            _gameOverWindow.SetGameResultData(_meterCounterSystem.Meters, 0, UpdateRecord());
+            _gameOverWindow.SetGameResultData(_meterCounterSystem.Meters, _collectableService.CollectableProgressData.Coins,
+                _meterCounterSystem.TryDefineRecord());
             _gameOverWindow.Show();
+            _collectableService.SaveCollectedItems();
         }
 
         private void RetryGame()

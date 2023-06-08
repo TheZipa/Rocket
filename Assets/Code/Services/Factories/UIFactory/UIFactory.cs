@@ -27,7 +27,7 @@ namespace Code.Services.Factories.UIFactory
         public void CreateMainMenu(Transform root)
         {
             MainMenu mainMenu = Object.Instantiate(_staticData.Prefabs.MainMenuPrefab, root);
-            mainMenu.Configure(_progress.Progress.MetersRecord);
+            mainMenu.Configure(_progress.Progress.MetersRecord, _progress.Progress.Coins);
             _entityContainer.RegisterEntity(mainMenu);
         }
 

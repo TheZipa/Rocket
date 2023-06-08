@@ -7,6 +7,7 @@ namespace Code.Core.Rocket
 {
     public class Rocket : MonoBehaviour, IFactoryEntity
     {
+        public event Action<Collider> OnCollect;
         public event Action OnExplode;
         public event Action OnUpdate;
 
@@ -17,6 +18,7 @@ namespace Code.Core.Rocket
         [SerializeField] private Collider _collider;
         [SerializeField] private GameObject _view;
 
+        private const string CollectableTag = "Collectable";
         private bool _isExploded;
 
         public void Construct(float maxSpeed) => _movement.Construct(maxSpeed);
@@ -77,6 +79,12 @@ namespace Code.Core.Rocket
         {
             if (_isExploded) return;
             Explode();
+        }
+
+        private void OnTriggerEnter(Collider collider)
+        {
+            if (collider.CompareTag(CollectableTag) == false) return;
+            OnCollect?.Invoke(collider);
         }
     }
 }

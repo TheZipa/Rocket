@@ -1,4 +1,5 @@
 using Code.Infrastructure.StateMachine.GameStateMachine;
+using Code.Services.CollectableService;
 using Code.Services.CoroutineRunner;
 using Code.Services.EntityContainer;
 using Code.Services.Factories.GameFactory;
@@ -44,7 +45,8 @@ namespace Code.Infrastructure.StateMachine.States
             container.RegisterSingle<ISaveLoad>(new SaveLoadService());
             container.RegisterSingle<IPersistentProgress>(new PersistentProgress(container.Single<ISaveLoad>()));
             container.RegisterSingle<IInputService>(new InputService(_coroutineRunner));
-            
+            container.RegisterSingle<ICollectableService>(new CollectableService(container.Single<IPersistentProgress>()));
+
             RegisterStaticData(container);
             RegisterGameFactory(container);
             RegisterUIFactory(container);
@@ -59,7 +61,8 @@ namespace Code.Infrastructure.StateMachine.States
 
         private void RegisterGameFactory(ServiceContainer.ServiceContainer container) =>
             container.RegisterSingle<IGameFactory>(new GameFactory(container.Single<IStaticData>(),
-                container.Single<IEntityContainer>(), container.Single<IInputService>()));
+                container.Single<IEntityContainer>(), container.Single<IInputService>(),
+                container.Single<IPersistentProgress>(), container.Single<ICollectableService>()));
 
         private void RegisterUIFactory(ServiceContainer.ServiceContainer container) =>
             container.RegisterSingle<IUIFactory>(new UIFactory(container.Single<IStaticData>(),

@@ -1,4 +1,5 @@
-﻿using Code.Core.Environment.Obstacles;
+﻿using Code.Core.Collectables;
+using Code.Core.Environment.Obstacles;
 using UnityEngine;
 
 namespace Code.Core.Environment
@@ -7,14 +8,17 @@ namespace Code.Core.Environment
     {
         public Transform BeginPosition;
         public Transform EndPosition;
+        public CollectableItem[] CollectableItems;
 
         [SerializeField] private LevelObstacle[] _obstacles;
 
         public void Enable()
         {
+            gameObject.SetActive(true);
             foreach (LevelObstacle obstacle in _obstacles) 
                 obstacle.Activate();
-            gameObject.SetActive(true);
+            foreach (CollectableItem collectableItem in CollectableItems) 
+                collectableItem.Refresh();
         }
 
         public void Disable() => gameObject.SetActive(false);
