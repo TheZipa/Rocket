@@ -4,6 +4,7 @@ using Code.Services.EntityContainer;
 using Code.Services.Factories.GameFactory;
 using Code.Services.Factories.UIFactory;
 using Code.Services.Input;
+using Code.Services.LoadingScreen;
 using Code.Services.PersistentProgress;
 using Code.Services.SaveLoad;
 using Code.Services.SceneLoader;
@@ -18,12 +19,12 @@ namespace Code.Infrastructure.StateMachine.States
         private readonly ICoroutineRunner _coroutineRunner;
 
         public BootstrapState(IGameStateMachine gameStateMachine, ServiceContainer.ServiceContainer container,
-            ICoroutineRunner coroutineRunner)
+            ICoroutineRunner coroutineRunner, ILoadingScreen loadingScreen)
         {
             _gameStateMachine = gameStateMachine;
             _coroutineRunner = coroutineRunner;
 
-            RegisterServices(container);
+            RegisterServices(container, loadingScreen);
         }
 
         public void Enter() => _gameStateMachine.Enter<LoadProgressState>();
@@ -32,10 +33,11 @@ namespace Code.Infrastructure.StateMachine.States
         {
         }
         
-        private void RegisterServices(ServiceContainer.ServiceContainer container)
+        private void RegisterServices(ServiceContainer.ServiceContainer container, ILoadingScreen loadingScreen)
         {
             container.RegisterSingle<IGameStateMachine>(_gameStateMachine);
             container.RegisterSingle<ICoroutineRunner>(_coroutineRunner);
+            container.RegisterSingle<ILoadingScreen>(loadingScreen);
             container.RegisterSingle<IEntityContainer>(new EntityContainer());
             container.RegisterSingle<IStaticDataProvider>(new StaticDataProvider());
             container.RegisterSingle<ISceneLoader>(new SceneLoader());

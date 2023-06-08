@@ -6,6 +6,7 @@ using Code.Services.EntityContainer;
 using Code.Services.Factories.GameFactory;
 using Code.Services.Factories.UIFactory;
 using Code.Services.Input;
+using Code.Services.LoadingScreen;
 using Code.Services.PersistentProgress;
 using Code.Services.SaveLoad;
 using Code.Services.SceneLoader;
@@ -18,19 +19,20 @@ namespace Code.Infrastructure.StateMachine.GameStateMachine
         private readonly Dictionary<Type, IExitableState> _states;
         private IExitableState _activeState;
 
-        public GameStateMachine(ServiceContainer.ServiceContainer container, ICoroutineRunner coroutineRunner)
+        public GameStateMachine(ServiceContainer.ServiceContainer container, ICoroutineRunner coroutineRunner,
+            ILoadingScreen loadingScreen)
         {
             _states = new Dictionary<Type, IExitableState>()
             {
-                [typeof(BootstrapState)] = new BootstrapState(this, container, coroutineRunner),
+                [typeof(BootstrapState)] = new BootstrapState(this, container, coroutineRunner, loadingScreen),
                 [typeof(LoadProgressState)] = new LoadProgressState(this, 
                     container.Single<IPersistentProgress>(), container.Single<ISaveLoad>()),
                 [typeof(LoadGameState)] = new LoadGameState(this, container.Single<ISceneLoader>(),
                         container.Single<IUIFactory>(), container.Single<IGameFactory>()),
-                [typeof(MenuState)] = new MenuState(this, container.Single<IEntityContainer>()),
+                [typeof(MenuState)] = new MenuState(this, container.Single<IEntityContainer>(), loadingScreen),
                 [typeof(GameplayState)] = new GameplayState(this, container.Single<IEntityContainer>(),
-                    container.Single<IInputService>(), container.Single<IPersistentProgress>(),
-                    container.Single<IStaticData>()),
+                    loadingScreen, container.Single<IInputService>(), 
+                    container.Single<IPersistentProgress>(), container.Single<IStaticData>()),
             };
         }
 

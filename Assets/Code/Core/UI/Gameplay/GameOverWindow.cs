@@ -12,11 +12,24 @@ namespace Code.Core.UI.Gameplay
         
         [SerializeField] private Button _retryButton;
         [SerializeField] private TextMeshProUGUI _meters;
+        [SerializeField] private TextMeshProUGUI _collectedCoins;
+        [SerializeField] private GameObject _newRecord;
         [SerializeField] private Animator _animator;
 
         private readonly int _showAnimationHash = Animator.StringToHash("Show");
 
-        public void SetMeters(float meters) => _meters.text = $"{meters}m";
+        public void SetGameResultData(float meters, int collectedCoins, bool isNewRecord)
+        {
+            _meters.text = $"{meters}m";
+            _collectedCoins.text = collectedCoins.ToString();
+            _newRecord.SetActive(isNewRecord);
+        }
+
+        public override void Show()
+        {
+            base.Show();
+            _animator.SetTrigger(_showAnimationHash);
+        }
 
         private void Awake() => _retryButton.onClick.AddListener(SendRetry);
 

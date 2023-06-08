@@ -1,16 +1,14 @@
-using System.Collections;
 using Code.Core.Camera;
 using Code.Core.Environment;
 using Code.Core.MeterCounter;
 using Code.Core.Rocket;
 using Code.Core.UI.Gameplay;
 using Code.Infrastructure.StateMachine.GameStateMachine;
-using Code.Services.CoroutineRunner;
 using Code.Services.EntityContainer;
 using Code.Services.Input;
+using Code.Services.LoadingScreen;
 using Code.Services.PersistentProgress;
 using Code.Services.StaticData;
-using UnityEngine;
 
 namespace Code.Infrastructure.StateMachine.States
 {
@@ -18,6 +16,7 @@ namespace Code.Infrastructure.StateMachine.States
     {
         private readonly IGameStateMachine _stateMachine;
         private readonly IEntityContainer _entityContainer;
+        private readonly ILoadingScreen _loadingScreen;
         private readonly IInputService _inputService;
         private readonly IPersistentProgress _persistentProgress;
         private readonly IStaticData _staticData;
@@ -29,11 +28,12 @@ namespace Code.Infrastructure.StateMachine.States
         private LevelCamera _levelCamera;
         private Rocket _rocket;
 
-        public GameplayState(IGameStateMachine stateMachine, IEntityContainer entityContainer, 
+        public GameplayState(IGameStateMachine stateMachine, IEntityContainer entityContainer, ILoadingScreen loadingScreen,
             IInputService inputService, IPersistentProgress persistentProgress, IStaticData staticData)
         {
             _stateMachine = stateMachine;
             _entityContainer = entityContainer;
+            _loadingScreen = loadingScreen;
             _inputService = inputService;
             _persistentProgress = persistentProgress;
             _staticData = staticData;
@@ -50,6 +50,7 @@ namespace Code.Infrastructure.StateMachine.States
 
         public void Exit()
         {
+            _loadingScreen.Show();
             _rocketInputHandler.Dispose();
             _permanentLevel.Dispose();
             _rocket.OnExplode -= DefineGameOver;
@@ -84,8 +85,7 @@ namespace Code.Infrastructure.StateMachine.States
             _meterCounterSystem.StopCounting();
             _levelCamera.DisableRocketTracking();
             _inputService.Disable();
-            UpdateRecord(); 
-            _gameOverWindow.SetMeters(_meterCounterSystem.Meters);
+            _gameOverWindow.SetGameResultData(_meterCounterSystem.Meters, 0, UpdateRecord());
             _gameOverWindow.Show();
         }
 
