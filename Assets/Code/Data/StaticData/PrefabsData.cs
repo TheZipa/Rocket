@@ -17,6 +17,6 @@ namespace Code.Data.StaticData
         public GameObject RootCanvasPrefab;
         public MainMenu MainMenuPrefab;
         public GameOverWindow GameOverWindowPrefab;
-        public MeterCounterView MeterCounterViewPrefab;
+        public HudView HudViewPrefab;
     }
 }

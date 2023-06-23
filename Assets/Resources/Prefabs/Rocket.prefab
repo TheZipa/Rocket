@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 820055139615622068}
   - component: {fileID: 8594929296728975266}
   m_Layer: 0
-  m_Name: View
+  m_Name: Model
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,7 +93,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3505719438165276542}
   - component: {fileID: 7158963749643439247}
+  - component: {fileID: 9016131714344598112}
   - component: {fileID: 8055623189772138202}
+  - component: {fileID: 4604121005381574573}
   - component: {fileID: 64583677277045487}
   - component: {fileID: 230685033706403939}
   m_Layer: 0
@@ -133,12 +135,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f70dcba1cc04702a88eca42f0f63dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trail: {fileID: 4343726405709878436}
   _rigidbody: {fileID: 64583677277045487}
   _explosionEffect: {fileID: 123128940060234466}
   _movement: {fileID: 8055623189772138202}
+  _collision: {fileID: 9016131714344598112}
+  _view: {fileID: 4604121005381574573}
+--- !u!114 &9016131714344598112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2206315378795989960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d43eea47df3403083665c8cd140fe84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _explosionEffect: {fileID: 123128940060234466}
   _collider: {fileID: 230685033706403939}
-  _view: {fileID: 654614277927947054}
 --- !u!114 &8055623189772138202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,6 +167,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 64583677277045487}
+--- !u!114 &4604121005381574573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2206315378795989960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d128a85bb4074bf2acb9d90876f4a84d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _trail: {fileID: 4343726405709878436}
+  _model: {fileID: 654614277927947054}
 --- !u!54 &64583677277045487
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -10,11 +10,11 @@ namespace Code.Core.MeterCounter
         public float Meters { get; private set; }
 
         private readonly IPersistentProgress _progress;
-        private readonly MeterCounterView _counterView;
+        private readonly HudView _counterView;
         private readonly Rocket.Rocket _rocket;
         private float _lastRocketPosition;
 
-        public MeterCounterSystem(IPersistentProgress progress, MeterCounterView counterView, Rocket.Rocket rocket)
+        public MeterCounterSystem(IPersistentProgress progress, HudView counterView, Rocket.Rocket rocket)
         {
             _progress = progress;
             _counterView = counterView;

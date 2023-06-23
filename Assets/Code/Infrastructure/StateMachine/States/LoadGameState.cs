@@ -42,13 +42,13 @@ namespace Code.Infrastructure.StateMachine.States
             Transform rootCanvas = _uiFactory.CreateRootCanvas().transform;
             _uiFactory.CreateMainMenu(rootCanvas);
             _uiFactory.CreateGameOverWindow(rootCanvas);
-            _uiFactory.CreateMeterCounterView(rootCanvas);
+            _uiFactory.CreateHud(rootCanvas);
         }
 
         private void CreateGameplayComponents()
         {
             EnvironmentPart startEnvironmentPart = _gameFactory.CreateStartEnvironmentPart();
-            float startYPosition = startEnvironmentPart.BeginPosition.position.y + 0.8f;
+            float startYPosition = startEnvironmentPart.BeginPosition.position.y + 0.405f;
             _gameFactory.CreateRocket(startYPosition);
             _gameFactory.CreatePermanentEnvironmentSystem(startEnvironmentPart);
             _gameFactory.CreateLevelCamera(Camera.main, startYPosition);

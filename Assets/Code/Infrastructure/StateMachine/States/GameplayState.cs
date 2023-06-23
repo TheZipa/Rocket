@@ -27,6 +27,7 @@ namespace Code.Infrastructure.StateMachine.States
         private MeterCounterSystem _meterCounterSystem;
         private RocketInputHandler _rocketInputHandler;
         private GameOverWindow _gameOverWindow;
+        private HudView _hudView;
         private LevelCamera _levelCamera;
         private Rocket _rocket;
 
@@ -43,10 +44,11 @@ namespace Code.Infrastructure.StateMachine.States
 
         public void Enter()
         {
-            SetEntities();
+            CacheEntities();
             _levelCamera.EnableRocketTracking();
             _rocket.OnExplode += DefineGameOver;
             _rocket.OnCollect += CollectItem;
+            _rocket.OnFuelChanged += _hudView.SetFuel;
             _gameOverWindow.OnRetryClick += RetryGame;
             _rocket.Launch(_staticData.MainConfiguration.RocketLaunchTime, StartGameplay);
         }
@@ -58,24 +60,25 @@ namespace Code.Infrastructure.StateMachine.States
             _permanentLevel.Dispose();
             _rocket.OnExplode -= DefineGameOver;
             _rocket.OnCollect -= CollectItem;
+            _rocket.OnFuelChanged -= _hudView.SetFuel;
             _gameOverWindow.OnRetryClick -= RetryGame;
             _collectableService.CleanUp();
         }
 
-        private void SetEntities()
+        private void CacheEntities()
         {
             _permanentLevel = _entityContainer.GetEntity<PermanentLevelSystem>();
             _meterCounterSystem = _entityContainer.GetEntity<MeterCounterSystem>();
             _rocketInputHandler = _entityContainer.GetEntity<RocketInputHandler>();
             _rocket = _entityContainer.GetEntity<Rocket>();
             _gameOverWindow = _entityContainer.GetEntity<GameOverWindow>();
+            _hudView = _entityContainer.GetEntity<HudView>();
             _levelCamera = _entityContainer.GetEntity<LevelCamera>();
         }
 
         private void CollectItem(Collider collectedCollider)
         {
             CollectableType collectableType = _collectableService.Collect(collectedCollider);
-            Debug.Log(_collectableService.CollectableProgressData.Coins);
         }
 
         private void StartGameplay()

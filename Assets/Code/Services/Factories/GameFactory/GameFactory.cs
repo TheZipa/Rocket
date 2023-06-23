@@ -5,6 +5,7 @@ using Code.Core.Environment;
 using Code.Core.MeterCounter;
 using Code.Core.Rocket;
 using Code.Core.UI.Gameplay;
+using Code.Data.StaticData;
 using Code.Services.CollectableService;
 using Code.Services.EntityContainer;
 using Code.Services.Input;
@@ -35,8 +36,9 @@ namespace Code.Services.Factories.GameFactory
         public void CreateRocket(float yPosition)
         {
             Rocket rocket = Object.Instantiate(_staticData.Prefabs.RocketPrefab, new Vector3(0, yPosition), Quaternion.identity);
-            rocket.Construct(_staticData.MainConfiguration.MaxRocketSpeed);
-            _entityContainer.RegisterEntity(new RocketInputHandler(_inputService, rocket, _staticData.MainConfiguration.ClampAngle));
+            RocketData rocketData = _staticData.MainConfiguration.RocketData;
+            rocket.Construct(rocketData.MaxRocketSpeed, rocketData.MaxFuel, rocketData.ConsumeCoefficient);
+            _entityContainer.RegisterEntity(new RocketInputHandler(_inputService, rocket, rocketData.ClampAngle));
             _entityContainer.RegisterEntity(rocket);
         }
 
@@ -57,7 +59,7 @@ namespace Code.Services.Factories.GameFactory
             Object.Instantiate(_staticData.Prefabs.StartEnvironmentPartPrefab);
 
         public void CreateMeterCounterSystem() =>
-            _entityContainer.RegisterEntity(new MeterCounterSystem(_progress, _entityContainer.GetEntity<MeterCounterView>(),
+            _entityContainer.RegisterEntity(new MeterCounterSystem(_progress, _entityContainer.GetEntity<HudView>(),
                 _entityContainer.GetEntity<Rocket>()));
 
         private EnvironmentPart[] CreateEnvironmentParts()

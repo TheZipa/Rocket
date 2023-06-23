@@ -5,11 +5,13 @@ namespace Code.Data.StaticData
     [CreateAssetMenu(fileName = "Main Configuration", menuName = "Static Data/Main Configuration")]
     public class MainConfiguration : ScriptableObject
     {
-        public float MaxRocketSpeed;
+        [Header("General")]
         public float GameOverCameraOffset;
-        public float EnvironmentPartReplaceDistance;
-        public float RocketLaunchTime;
+        [Header("Environment")]
         public int MaxLevelPartsCount;
-        [Range(1, 10)] public float ClampAngle;
+        public float EnvironmentPartReplaceDistance;
+        [Header("Rocket")] 
+        public float RocketLaunchTime;
+        public RocketData RocketData;
     }
 }

@@ -8,6 +8,6 @@ namespace Code.Services.Factories.UIFactory
         GameObject CreateRootCanvas();
         void CreateGameOverWindow(Transform root);
         void CreateMainMenu(Transform root);
-        void CreateMeterCounterView(Transform root);
+        void CreateHud(Transform root);
     }
 }

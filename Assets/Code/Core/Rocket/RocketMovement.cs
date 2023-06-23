@@ -6,13 +6,14 @@ namespace Code.Core.Rocket
     public class RocketMovement : MonoBehaviour
     {
         [SerializeField] private Rigidbody _rigidbody;
-
+        private RocketFuel _fuel;
         private Coroutine _overclockRoutine;
         private float _maxSpeed;
         private float _currentSpeed;
 
-        public void Construct(float maxSpeed)
+        public void Construct(RocketFuel fuel, float maxSpeed)
         {
+            _fuel = fuel;
             _maxSpeed = maxSpeed;
             _rigidbody.velocity = new Vector3(0, _maxSpeed, 0);
         }
@@ -21,6 +22,7 @@ namespace Code.Core.Rocket
         {
             _currentSpeed = _rigidbody.velocity.magnitude;
             _rigidbody.isKinematic = true;
+            _fuel.DisableRestore();
             _overclockRoutine = StartCoroutine(Overclock());
         }
 
@@ -28,6 +30,7 @@ namespace Code.Core.Rocket
         {
             _rigidbody.isKinematic = false;
             _rigidbody.velocity = transform.up * _currentSpeed;
+            _fuel.EnableRestore();
             if(_overclockRoutine != null) StopCoroutine(_overclockRoutine);
         }
 
@@ -35,6 +38,7 @@ namespace Code.Core.Rocket
         {
             transform.rotation *= Quaternion.Euler(0, 0, angle);
             transform.position += transform.up * _currentSpeed * Time.deltaTime;
+            _fuel.ConsumeFuel();
         }
         
         private void FixedUpdate()

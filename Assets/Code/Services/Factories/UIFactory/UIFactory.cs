@@ -1,4 +1,5 @@
-﻿using Code.Core.UI.Menu;
+﻿using Code.Core.UI.Gameplay;
+using Code.Core.UI.Menu;
 using Code.Services.EntityContainer;
 using Code.Services.PersistentProgress;
 using Code.Services.StaticData;
@@ -31,7 +32,11 @@ namespace Code.Services.Factories.UIFactory
             _entityContainer.RegisterEntity(mainMenu);
         }
 
-        public void CreateMeterCounterView(Transform root) =>
-            _entityContainer.RegisterEntity(Object.Instantiate(_staticData.Prefabs.MeterCounterViewPrefab, root));
+        public void CreateHud(Transform root)
+        {
+            HudView hudView = Object.Instantiate(_staticData.Prefabs.HudViewPrefab, root);
+            hudView.Construct(_staticData.MainConfiguration.RocketData.MaxFuel);
+            _entityContainer.RegisterEntity(hudView);
+        }
     }
 }

@@ -8,25 +8,61 @@ namespace Code.Core.Rocket
     public class Rocket : MonoBehaviour, IFactoryEntity
     {
         public event Action<Collider> OnCollect;
+        public event Action<float> OnFuelChanged;
         public event Action OnExplode;
         public event Action OnUpdate;
-
-        [SerializeField] private TrailRenderer _trail;
+        
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private RocketExplosion _explosionEffect;
         [SerializeField] private RocketMovement _movement;
-        [SerializeField] private Collider _collider;
-        [SerializeField] private GameObject _view;
+        [SerializeField] private RocketCollision _collision;
+        [SerializeField] private RocketView _view;
+        private RocketFuel _fuel;
 
-        private const string CollectableTag = "Collectable";
-        private bool _isExploded;
-
-        public void Construct(float maxSpeed) => _movement.Construct(maxSpeed);
+        public void Construct(float maxSpeed, float maxFuel, float consumeCoefficient)
+        {
+            _fuel = new RocketFuel(this, maxFuel, consumeCoefficient);
+            _fuel.OnFuelEmpty += DisableFly;
+            _fuel.OnFuelChanged += SendFuelChange;
+            _movement.Construct(_fuel, maxSpeed);
+        }
 
         public void Launch(float launchTime, Action onLaunched = null)
         {
-            _isExploded = false;
+            _explosionEffect.IsExploded = false;
             StartCoroutine(StartLaunch(launchTime, onLaunched));
+        }
+
+        public void EnableFly()
+        {
+            _view.EnableTrail();
+            _movement.Enable();
+        }
+
+        public void DisableFly()
+        {
+            _view.DisableTrail();
+            _movement.Disable();
+        }
+
+        public void Move(float angle) => _movement.Move(angle);
+
+        public void Explode()
+        {
+            _view.Hide();
+            _explosionEffect.Show();
+            _movement.Disable();
+            _fuel.DisableRestore();
+            _rigidbody.isKinematic = true;
+            OnExplode?.Invoke();
+        }
+
+        private void Awake()
+        {
+            _rigidbody.isKinematic = true;
+            _collision.IsEnabled = false;
+            _collision.OnExplode += Explode;
+            _collision.OnCollect += SendCollect;
         }
 
         private IEnumerator StartLaunch(float launchTime, Action onLaunched)
@@ -40,51 +76,27 @@ namespace Code.Core.Rocket
                 yield return null;
             }
             DisableFly();
-            _collider.enabled = true;
+            _collision.IsEnabled = true;
+            _fuel.RestoreFuelToMax();
             onLaunched?.Invoke();
         }
 
-        public void EnableFly()
-        {
-            _trail.emitting = true;
-            _movement.Enable();
-        }
+        private void SendCollect(Collider collectableCollider) => OnCollect?.Invoke(collectableCollider);
 
-        public void DisableFly()
+        private void SendFuelChange(float fuel)
         {
-            _trail.emitting = false;
-            _movement.Disable();
-        }
-
-        public void Move(float angle) => _movement.Move(angle);
-
-        public void Explode()
-        {
-            _view.SetActive(false);
-            _explosionEffect.Show();
-            _movement.Disable();
-            _isExploded = _rigidbody.isKinematic = true;
-            OnExplode?.Invoke();
-        }
-
-        private void Start()
-        {
-            _rigidbody.isKinematic = true;
-            _collider.enabled = false;
+            OnFuelChanged?.Invoke(fuel);
+            Debug.Log("Fuel changed - " + fuel);
         }
 
         private void Update() => OnUpdate?.Invoke();
 
-        private void OnCollisionEnter(Collision collision)
+        private void OnDestroy()
         {
-            if (_isExploded) return;
-            Explode();
-        }
-
-        private void OnTriggerEnter(Collider collider)
-        {
-            if (collider.CompareTag(CollectableTag) == false) return;
-            OnCollect?.Invoke(collider);
+            _collision.OnExplode -= Explode;
+            _collision.OnCollect -= SendCollect;
+            _fuel.OnFuelEmpty -= DisableFly;
+            _fuel.OnFuelChanged -= SendFuelChange;
         }
     }
 }

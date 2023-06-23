@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 243c95407ed74d64ab7db58f4ecd2063, type: 3}
   m_Name: Main Configuration
   m_EditorClassIdentifier: 
-  MaxRocketSpeed: 11
   GameOverCameraOffset: 20
+  MaxLevelPartsCount: 3
   EnvironmentPartReplaceDistance: 25
   RocketLaunchTime: 2
-  MaxLevelPartsCount: 3
-  ClampAngle: 2
+  RocketData:
+    MaxRocketSpeed: 11
+    MaxFuel: 20
+    ConsumeCoefficient: 0.02
+    ClampAngle: 2
