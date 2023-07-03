@@ -9,6 +9,7 @@ namespace Code.Data.StaticData
         public float MaxRocketSpeed;
         public float MaxFuel;
         public float ConsumeCoefficient;
+        public float RestoreDelay;
         [Range(1, 10)] public float ClampAngle;
     }
 }

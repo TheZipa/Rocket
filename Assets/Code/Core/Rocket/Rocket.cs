@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Code.Data.StaticData;
 using Code.Services.EntityContainer;
 using UnityEngine;
 
@@ -11,20 +12,20 @@ namespace Code.Core.Rocket
         public event Action<float> OnFuelChanged;
         public event Action OnExplode;
         public event Action OnUpdate;
-        
+
+        public RocketFuel Fuel { get; private set; }
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private RocketExplosion _explosionEffect;
         [SerializeField] private RocketMovement _movement;
         [SerializeField] private RocketCollision _collision;
         [SerializeField] private RocketView _view;
-        private RocketFuel _fuel;
 
-        public void Construct(float maxSpeed, float maxFuel, float consumeCoefficient)
+        public void Construct(RocketData rocketData)
         {
-            _fuel = new RocketFuel(this, maxFuel, consumeCoefficient);
-            _fuel.OnFuelEmpty += DisableFly;
-            _fuel.OnFuelChanged += SendFuelChange;
-            _movement.Construct(_fuel, maxSpeed);
+            Fuel = new RocketFuel(this, rocketData.MaxFuel, rocketData.ConsumeCoefficient, rocketData.RestoreDelay);
+            Fuel.OnFuelChanged += SendFuelChange;
+            Fuel.OnFuelEmpty += DisableFly;
+            _movement.Construct(Fuel, rocketData.MaxRocketSpeed);
         }
 
         public void Launch(float launchTime, Action onLaunched = null)
@@ -52,7 +53,7 @@ namespace Code.Core.Rocket
             _view.Hide();
             _explosionEffect.Show();
             _movement.Disable();
-            _fuel.DisableRestore();
+            Fuel.DisableRestore();
             _rigidbody.isKinematic = true;
             OnExplode?.Invoke();
         }
@@ -77,17 +78,13 @@ namespace Code.Core.Rocket
             }
             DisableFly();
             _collision.IsEnabled = true;
-            _fuel.RestoreFuelToMax();
+            Fuel.RestoreFuelToMax();
             onLaunched?.Invoke();
         }
 
         private void SendCollect(Collider collectableCollider) => OnCollect?.Invoke(collectableCollider);
 
-        private void SendFuelChange(float fuel)
-        {
-            OnFuelChanged?.Invoke(fuel);
-            Debug.Log("Fuel changed - " + fuel);
-        }
+        private void SendFuelChange(float fuel) => OnFuelChanged?.Invoke(fuel);
 
         private void Update() => OnUpdate?.Invoke();
 
@@ -95,8 +92,8 @@ namespace Code.Core.Rocket
         {
             _collision.OnExplode -= Explode;
             _collision.OnCollect -= SendCollect;
-            _fuel.OnFuelEmpty -= DisableFly;
-            _fuel.OnFuelChanged -= SendFuelChange;
+            Fuel.OnFuelChanged -= SendFuelChange;
+            Fuel.OnFuelEmpty -= DisableFly;
         }
     }
 }

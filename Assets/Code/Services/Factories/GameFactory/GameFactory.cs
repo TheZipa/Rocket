@@ -37,7 +37,7 @@ namespace Code.Services.Factories.GameFactory
         {
             Rocket rocket = Object.Instantiate(_staticData.Prefabs.RocketPrefab, new Vector3(0, yPosition), Quaternion.identity);
             RocketData rocketData = _staticData.MainConfiguration.RocketData;
-            rocket.Construct(rocketData.MaxRocketSpeed, rocketData.MaxFuel, rocketData.ConsumeCoefficient);
+            rocket.Construct(rocketData);
             _entityContainer.RegisterEntity(new RocketInputHandler(_inputService, rocket, rocketData.ClampAngle));
             _entityContainer.RegisterEntity(rocket);
         }

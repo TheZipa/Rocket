@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Code.Core.Collectables
 {
-    public class Coin : CollectableItem
+    public class Gas : CollectableItem
     {
         [SerializeField] private float _rotateSpeed;
         [SerializeField] private ParticleSystem _collectEffect;
@@ -12,7 +12,7 @@ namespace Code.Core.Collectables
             base.Collect();
             _collectEffect.Play();
         }
-
+        
         private void Update() => transform.Rotate(Vector3.forward, Time.deltaTime * _rotateSpeed);
     }
 }

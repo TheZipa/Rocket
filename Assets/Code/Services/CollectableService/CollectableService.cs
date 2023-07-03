@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Code.Core.Collectables;
+using Code.Core.Rocket;
 using Code.Data;
 using Code.Data.Enums;
+using Code.Services.EntityContainer;
 using Code.Services.PersistentProgress;
 using UnityEngine;
 
@@ -12,15 +14,18 @@ namespace Code.Services.CollectableService
     {
         public CollectableProgressData CollectableProgressData { get; private set; }
         private readonly IPersistentProgress _persistentProgress;
+        private readonly IEntityContainer _entityContainer;
         private readonly Dictionary<Collider, CollectableItem> _collectables = new(50);
         private readonly Dictionary<CollectableType, Action> _collectActions;
 
-        public CollectableService(IPersistentProgress persistentProgress)
+        public CollectableService(IPersistentProgress persistentProgress, IEntityContainer entityContainer)
         {
             _persistentProgress = persistentProgress;
+            _entityContainer = entityContainer;
             _collectActions = new()
             {
-                [CollectableType.Coin] = AddCoin
+                [CollectableType.Coin] = AddCoin,
+                [CollectableType.Gas] = FillFuel
             };
         }
 
@@ -56,5 +61,7 @@ namespace Code.Services.CollectableService
             collectableProgressData.Coins++;
             CollectableProgressData = collectableProgressData;
         }
+
+        private void FillFuel() => _entityContainer.GetEntity<Rocket>().Fuel.RestoreFuelToMax();
     }
 }

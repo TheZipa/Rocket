@@ -23,4 +23,4 @@ MonoBehaviour:
   RootCanvasPrefab: {fileID: 8927380304441350616, guid: 17f494cd2bfab493fa28ae48dd62b1a8, type: 3}
   MainMenuPrefab: {fileID: 8431922885383656290, guid: 0d5f1ecd092dc434b85a24bb48107762, type: 3}
   GameOverWindowPrefab: {fileID: 6729102326845350724, guid: f376237af96529a45a6882334433ecf5, type: 3}
-  MeterCounterViewPrefab: {fileID: 5663614280721479047, guid: 0ea510f442c274c5988f2a3447e6b1d1, type: 3}
+  HudViewPrefab: {fileID: 1041602414437818913, guid: 0ea510f442c274c5988f2a3447e6b1d1, type: 3}

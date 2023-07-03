@@ -11,5 +11,6 @@ namespace Code.Services.Input
         void Disable();
         event Action OnDragStart;
         event Action OnDragEnd;
+        void DisableDrag();
     }
 }

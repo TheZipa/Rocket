@@ -25,6 +25,7 @@ namespace Code.Core.Rocket
             _inputService.OnDragEnd -= _rocket.DisableFly;
             _inputService.OnDrag -= MoveRocket;
             _inputService.Disable();
+            _rocket.Fuel.OnFuelEmpty -= _inputService.DisableDrag;
         }
         
         private void PrepareInput()
@@ -32,6 +33,7 @@ namespace Code.Core.Rocket
             _inputService.OnDragStart += _rocket.EnableFly;
             _inputService.OnDragEnd += _rocket.DisableFly;
             _inputService.OnDrag += MoveRocket;
+            _rocket.Fuel.OnFuelEmpty += _inputService.DisableDrag;
         }
         
         private void MoveRocket(float screenX)

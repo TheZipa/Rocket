@@ -39,6 +39,8 @@ namespace Code.Services.Input
             _inputActions.Disable();
         }
 
+        public void DisableDrag() => FinishDragRoutine();
+
         private void StartDrag(InputAction.CallbackContext context)
         {
             FinishDragRoutine();

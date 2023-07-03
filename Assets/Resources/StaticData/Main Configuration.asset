@@ -19,5 +19,6 @@ MonoBehaviour:
   RocketData:
     MaxRocketSpeed: 11
     MaxFuel: 20
-    ConsumeCoefficient: 0.02
+    ConsumeCoefficient: 3
+    RestoreDelay: 1
     ClampAngle: 2

@@ -7,9 +7,10 @@ namespace Code.Core.Collectables
     {
         public Collider Collider;
         public CollectableType CollectableType;
+        [SerializeField] protected MeshRenderer _mesh;
 
-        public virtual void Collect() => Collider.enabled = false;
+        public virtual void Collect() => _mesh.enabled = Collider.enabled = false;
 
-        public virtual void Refresh() => Collider.enabled = true;
+        public virtual void Refresh() => _mesh.enabled = Collider.enabled = true;
     }
 }

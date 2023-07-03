@@ -45,7 +45,8 @@ namespace Code.Infrastructure.StateMachine.States
             container.RegisterSingle<ISaveLoad>(new SaveLoadService());
             container.RegisterSingle<IPersistentProgress>(new PersistentProgress(container.Single<ISaveLoad>()));
             container.RegisterSingle<IInputService>(new InputService(_coroutineRunner));
-            container.RegisterSingle<ICollectableService>(new CollectableService(container.Single<IPersistentProgress>()));
+            container.RegisterSingle<ICollectableService>(new CollectableService(container.Single<IPersistentProgress>(),
+                container.Single<IEntityContainer>()));
 
             RegisterStaticData(container);
             RegisterGameFactory(container);
